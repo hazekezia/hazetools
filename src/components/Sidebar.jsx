@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, ScanText, TableProperties, X } from 'lucide-react';
+import { Home, ScanText, TableProperties, FileJson, X } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -7,6 +7,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/', label: 'Dashboard', icon: <Home size={20} /> },
     { path: '/image-to-text', label: 'Image to Text', icon: <ScanText size={20} /> },
     { path: '/csv-viewer', label: 'CSV Viewer', icon: <TableProperties size={20} /> },
+    { path: '/json-viewer', label: 'JSON Viewer', icon: <FileJson size={20} /> },
   ];
 
   return (
