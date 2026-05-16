@@ -32,7 +32,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h1 className="page-title">Welcome to Haze Tools</h1>
+      <h1 className="page-title">Welcome to hz.tools</h1>
       <p className="page-subtitle">Your all-in-one workspace for online utilities.</p>
       
       <div className="tools-grid">
