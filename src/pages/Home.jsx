@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ScanText, TableProperties, ArrowRight } from 'lucide-react';
+import { ScanText, TableProperties, FileJson, ArrowRight } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
@@ -19,6 +19,14 @@ const Home = () => {
       icon: <TableProperties size={32} className="tool-icon" />,
       path: '/csv-viewer',
       color: 'blue'
+    },
+    {
+      id: 'json-viewer',
+      title: 'JSON Viewer',
+      description: 'Format, validate, and explore your JSON data with an interactive tree view.',
+      icon: <FileJson size={32} className="tool-icon" />,
+      path: '/json-viewer',
+      color: 'green'
     }
   ];
 
