@@ -10,7 +10,7 @@ describe('Home Page', () => {
       </BrowserRouter>
     );
     
-    expect(screen.getByText('Welcome to Haze Tools')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to hz.tools')).toBeInTheDocument();
     expect(screen.getByText('Image to Text (OCR)')).toBeInTheDocument();
     expect(screen.getByText('CSV Viewer')).toBeInTheDocument();
   });
