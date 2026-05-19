@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
-import { Upload, Copy, Check, Loader2 } from 'lucide-react';
+import { Upload, Copy, Check, Loader2, X, Clock, ImageIcon } from 'lucide-react';
 import './ImageToText.css';
 
 const ImageToText = () => {
@@ -10,7 +10,41 @@ const ImageToText = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [expandedHistory, setExpandedHistory] = useState(null);
   const fileInputRef = useRef(null);
+  const idCounter = useRef(0);
+
+  const saveToHistory = () => {
+    if (!imagePreview || !text.trim()) return;
+
+    const exists = history.some((entry) => entry.imagePreview === imagePreview && entry.text === text);
+    if (exists) return;
+
+    const name = image?.name || 'Pasted image';
+    setHistory((prev) => [
+      {
+        id: ++idCounter.current,
+        imagePreview,
+        text: text.trim(),
+        filename: name,
+        timestamp: new Date().toLocaleString(),
+      },
+      ...prev,
+    ]);
+  };
+
+  const clearCurrent = () => {
+    setImage(null);
+    setImagePreview(null);
+    setText('');
+    setProgress(0);
+  };
+
+  const removeHistoryEntry = (id) => {
+    setHistory((prev) => prev.filter((entry) => entry.id !== id));
+    if (expandedHistory === id) setExpandedHistory(null);
+  };
 
   useEffect(() => {
     const handlePaste = (e) => {
@@ -20,6 +54,7 @@ const ImageToText = () => {
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
+          saveToHistory();
           setImage(file);
           setImagePreview(URL.createObjectURL(file));
           setText('');
@@ -31,11 +66,12 @@ const ImageToText = () => {
 
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
-  }, []);
+  }, [imagePreview, text]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      saveToHistory();
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
       setText('');
@@ -47,6 +83,7 @@ const ImageToText = () => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
+      saveToHistory();
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
       setText('');
@@ -151,7 +188,7 @@ const ImageToText = () => {
 
       <div className="ocr-content">
         <div className="upload-section glass-panel">
-          <div 
+          <div
             className={`drop-zone ${imagePreview ? 'has-image' : ''}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
@@ -166,36 +203,43 @@ const ImageToText = () => {
                 <p>Supports PNG, JPG, JPEG</p>
               </div>
             )}
-            <input 
-              type="file" 
+            <input
+              type="file"
               data-testid="file-input"
               ref={fileInputRef}
-              onChange={handleImageChange} 
-              accept="image/*" 
+              onChange={handleImageChange}
+              accept="image/*"
               style={{ display: 'none' }}
             />
           </div>
 
-          <button 
-            className="btn-primary extract-btn" 
-            onClick={extractText}
-            disabled={!image || isProcessing}
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 size={20} className="spinner" />
-                Processing... {progress}%
-              </>
-            ) : (
-              'Extract Text'
+          <div className="upload-actions">
+            <button
+              className="btn-primary extract-btn"
+              onClick={extractText}
+              disabled={!image || isProcessing}
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 size={20} className="spinner" />
+                  Processing... {progress}%
+                </>
+              ) : (
+                'Extract Text'
+              )}
+            </button>
+            {imagePreview && !isProcessing && (
+              <button className="btn-secondary clear-btn" onClick={clearCurrent}>
+                Clear
+              </button>
             )}
-          </button>
+          </div>
         </div>
 
         <div className="result-section glass-panel">
           <div className="result-header">
             <h3>Extracted Text</h3>
-            <button 
+            <button
               className={`copy-btn ${copied ? 'copied' : ''}`}
               onClick={copyToClipboard}
               disabled={!text}
@@ -204,7 +248,7 @@ const ImageToText = () => {
               {copied ? <Check size={18} /> : <Copy size={18} />}
             </button>
           </div>
-          <textarea 
+          <textarea
             className="text-result input-field"
             value={text}
             readOnly
@@ -212,6 +256,68 @@ const ImageToText = () => {
           />
         </div>
       </div>
+
+      {history.length > 0 && (
+        <div className="history-section">
+          <div className="history-header">
+            <h3>History ({history.length})</h3>
+            <button
+              className="btn-secondary"
+              onClick={() => { setHistory([]); setExpandedHistory(null); }}
+            >
+              Clear All
+            </button>
+          </div>
+          <div className="history-list">
+            {history.map((entry) => (
+              <div key={entry.id} className="history-card glass-panel">
+                <div className="history-card-header">
+                  <div className="history-card-meta">
+                    <ImageIcon size={14} />
+                    <span className="history-filename">{entry.filename}</span>
+                    <Clock size={14} />
+                    <span className="history-timestamp">{entry.timestamp}</span>
+                  </div>
+                  <div className="history-card-actions">
+                    <button
+                      className="copy-btn"
+                      onClick={() => {
+                        navigator.clipboard.writeText(entry.text);
+                      }}
+                      title="Copy text"
+                    >
+                      <Copy size={16} />
+                    </button>
+                    <button
+                      className="copy-btn"
+                      onClick={() => removeHistoryEntry(entry.id)}
+                      title="Remove from history"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+                <div className="history-card-body">
+                  <img src={entry.imagePreview} alt={entry.filename} className="history-thumb" />
+                  <div className="history-text-wrapper">
+                    <pre className={`history-text ${expandedHistory === entry.id ? 'expanded' : ''}`}>
+                      {entry.text}
+                    </pre>
+                    {entry.text.length > 200 && (
+                      <button
+                        className="history-expand-btn"
+                        onClick={() => setExpandedHistory(expandedHistory === entry.id ? null : entry.id)}
+                      >
+                        {expandedHistory === entry.id ? 'Show less' : 'Show more'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
