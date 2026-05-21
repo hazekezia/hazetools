@@ -35,6 +35,10 @@ HTMLCanvasElement.prototype.getContext = () => ({
 HTMLCanvasElement.prototype.toDataURL = () => 'mocked-data-url';
 
 describe('ImageToText Page', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
   it('renders upload zone initially', () => {
     render(<ImageToText />);
     expect(screen.getByText('Image to Text (OCR)')).toBeInTheDocument();
@@ -82,5 +86,34 @@ describe('ImageToText Page', () => {
       expect(screen.getByText('Correct Text (High Confidence)')).toBeInTheDocument();
       expect(screen.getByText('first.png')).toBeInTheDocument();
     });
+  });
+
+  it('persists history in sessionStorage when component is unmounted and remounted', async () => {
+    const { unmount } = render(<ImageToText />);
+
+    const file1 = new File(['dummy'], 'first.png', { type: 'image/png' });
+    const input = screen.getByTestId('file-input');
+    fireEvent.change(input, { target: { files: [file1] } });
+    fireEvent.click(screen.getByText('Extract Text'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Correct Text (High Confidence)')).toBeInTheDocument();
+    });
+
+    const file2 = new File(['dummy'], 'second.png', { type: 'image/png' });
+    fireEvent.change(input, { target: { files: [file2] } });
+
+    await waitFor(() => {
+      expect(screen.getByText('first.png')).toBeInTheDocument();
+    });
+
+    // Simulate navigating away
+    unmount();
+
+    // Simulate navigating back
+    render(<ImageToText />);
+
+    // History should still be loaded from sessionStorage
+    expect(screen.getByText('first.png')).toBeInTheDocument();
   });
 });

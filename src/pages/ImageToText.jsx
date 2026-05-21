@@ -10,10 +10,32 @@ const ImageToText = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('ocr-history');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [expandedHistory, setExpandedHistory] = useState(null);
   const fileInputRef = useRef(null);
   const idCounter = useRef(0);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('ocr-history', JSON.stringify(history));
+    } catch (e) {
+      console.error('Failed to save history to sessionStorage', e);
+    }
+  }, [history]);
+
+  useEffect(() => {
+    if (history.length > 0) {
+      const maxId = Math.max(...history.map((entry) => entry.id), 0);
+      idCounter.current = maxId;
+    }
+  }, [history]);
 
   const saveToHistory = () => {
     if (!imagePreview || !text.trim()) return;

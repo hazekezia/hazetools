@@ -7,24 +7,24 @@ const Home = () => {
     {
       id: 'image-to-text',
       title: 'Image to Text (OCR)',
-      description: 'Extract text from any image quickly using advanced OCR technology right in your browser.',
-      icon: <ScanText size={32} className="tool-icon" />,
+      description: 'Extract text from any image quickly using advanced OCR technology.',
+      icon: <ScanText size={22} className="tool-icon" />,
       path: '/image-to-text',
       color: 'purple'
     },
     {
       id: 'csv-viewer',
       title: 'CSV Viewer',
-      description: 'Open, view, and analyze your CSV files instantly in a responsive data grid.',
-      icon: <TableProperties size={32} className="tool-icon" />,
+      description: 'Open, view, and analyze your CSV files instantly in a responsive grid.',
+      icon: <TableProperties size={22} className="tool-icon" />,
       path: '/csv-viewer',
       color: 'blue'
     },
     {
       id: 'json-viewer',
       title: 'JSON Viewer',
-      description: 'Format, validate, and explore your JSON data with an interactive tree view.',
-      icon: <FileJson size={32} className="tool-icon" />,
+      description: 'Format, validate, and explore JSON data with an interactive tree view.',
+      icon: <FileJson size={22} className="tool-icon" />,
       path: '/json-viewer',
       color: 'green'
     }
@@ -38,16 +38,15 @@ const Home = () => {
       <div className="tools-grid">
         {tools.map((tool) => (
           <Link to={tool.path} key={tool.id} className={`tool-card glass-panel ${tool.color}`}>
-            <div className="tool-header">
-              <div className="icon-wrapper">
-                {tool.icon}
-              </div>
+            <div className="icon-wrapper">
+              {tool.icon}
             </div>
-            <h3>{tool.title}</h3>
-            <p>{tool.description}</p>
-            <div className="tool-footer">
-              <span>Launch Tool</span>
-              <ArrowRight size={16} />
+            <div className="tool-info">
+              <h3>{tool.title}</h3>
+              <p>{tool.description}</p>
+            </div>
+            <div className="tool-arrow">
+              <ArrowRight size={18} />
             </div>
           </Link>
         ))}
