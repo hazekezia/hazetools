@@ -63,7 +63,7 @@ describe('ImageToText Page', () => {
     });
   });
 
-  it('saves previous result to history when new image is uploaded', async () => {
+  it('saves result to history immediately when text is extracted', async () => {
     render(<ImageToText />);
 
     // Upload first image and extract text
@@ -72,18 +72,10 @@ describe('ImageToText Page', () => {
     fireEvent.change(input, { target: { files: [file1] } });
     fireEvent.click(screen.getByText('Extract Text'));
 
+    // History section should appear with the result immediately
     await waitFor(() => {
       expect(screen.getByDisplayValue('Correct Text (High Confidence)')).toBeInTheDocument();
-    });
-
-    // Upload second image — should save first result to history
-    const file2 = new File(['dummy'], 'second.png', { type: 'image/png' });
-    fireEvent.change(input, { target: { files: [file2] } });
-
-    // History section should appear with the previous result
-    await waitFor(() => {
       expect(screen.getByText(/History/)).toBeInTheDocument();
-      expect(screen.getByText('Correct Text (High Confidence)')).toBeInTheDocument();
       expect(screen.getByText('first.png')).toBeInTheDocument();
     });
   });
@@ -98,12 +90,6 @@ describe('ImageToText Page', () => {
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Correct Text (High Confidence)')).toBeInTheDocument();
-    });
-
-    const file2 = new File(['dummy'], 'second.png', { type: 'image/png' });
-    fireEvent.change(input, { target: { files: [file2] } });
-
-    await waitFor(() => {
       expect(screen.getByText('first.png')).toBeInTheDocument();
     });
 

@@ -37,18 +37,24 @@ const ImageToText = () => {
     }
   }, [history]);
 
-  const saveToHistory = () => {
-    if (!imagePreview || !text.trim()) return;
+  const saveToHistory = (img, preview, extractedText) => {
+    const currentImg = img || image;
+    const currentPreview = preview || imagePreview;
+    const currentText = extractedText || text;
 
-    const exists = history.some((entry) => entry.imagePreview === imagePreview && entry.text === text);
+    if (!currentPreview || !currentText || !currentText.trim()) return;
+
+    const exists = history.some(
+      (entry) => entry.imagePreview === currentPreview && entry.text === currentText.trim()
+    );
     if (exists) return;
 
-    const name = image?.name || 'Pasted image';
+    const name = currentImg?.name || 'Pasted image';
     setHistory((prev) => [
       {
         id: ++idCounter.current,
-        imagePreview,
-        text: text.trim(),
+        imagePreview: currentPreview,
+        text: currentText.trim(),
         filename: name,
         timestamp: new Date().toLocaleString(),
       },
@@ -76,7 +82,6 @@ const ImageToText = () => {
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
-          saveToHistory();
           setImage(file);
           setImagePreview(URL.createObjectURL(file));
           setText('');
@@ -93,7 +98,6 @@ const ImageToText = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      saveToHistory();
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
       setText('');
@@ -105,7 +109,6 @@ const ImageToText = () => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
-      saveToHistory();
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
       setText('');
@@ -183,8 +186,9 @@ const ImageToText = () => {
           bestResult = result;
         }
       }
-      
-      setText(bestResult.data.text);
+      const extractedText = bestResult.data.text;
+      setText(extractedText);
+      saveToHistory(image, imagePreview, extractedText);
     } catch (error) {
       console.error('OCR Error:', error);
       setText('Error extracting text. Please try another image.');
