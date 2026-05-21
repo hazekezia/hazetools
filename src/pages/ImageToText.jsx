@@ -10,23 +10,51 @@ const ImageToText = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('ocr-history');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [expandedHistory, setExpandedHistory] = useState(null);
   const fileInputRef = useRef(null);
   const idCounter = useRef(0);
 
-  const saveToHistory = () => {
-    if (!imagePreview || !text.trim()) return;
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('ocr-history', JSON.stringify(history));
+    } catch (e) {
+      console.error('Failed to save history to sessionStorage', e);
+    }
+  }, [history]);
 
-    const exists = history.some((entry) => entry.imagePreview === imagePreview && entry.text === text);
+  useEffect(() => {
+    if (history.length > 0) {
+      const maxId = Math.max(...history.map((entry) => entry.id), 0);
+      idCounter.current = maxId;
+    }
+  }, [history]);
+
+  const saveToHistory = (img, preview, extractedText) => {
+    const currentImg = img || image;
+    const currentPreview = preview || imagePreview;
+    const currentText = extractedText || text;
+
+    if (!currentPreview || !currentText || !currentText.trim()) return;
+
+    const exists = history.some(
+      (entry) => entry.imagePreview === currentPreview && entry.text === currentText.trim()
+    );
     if (exists) return;
 
-    const name = image?.name || 'Pasted image';
+    const name = currentImg?.name || 'Pasted image';
     setHistory((prev) => [
       {
         id: ++idCounter.current,
-        imagePreview,
-        text: text.trim(),
+        imagePreview: currentPreview,
+        text: currentText.trim(),
         filename: name,
         timestamp: new Date().toLocaleString(),
       },
@@ -54,7 +82,6 @@ const ImageToText = () => {
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
-          saveToHistory();
           setImage(file);
           setImagePreview(URL.createObjectURL(file));
           setText('');
@@ -71,7 +98,6 @@ const ImageToText = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      saveToHistory();
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
       setText('');
@@ -83,7 +109,6 @@ const ImageToText = () => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
-      saveToHistory();
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
       setText('');
@@ -161,8 +186,9 @@ const ImageToText = () => {
           bestResult = result;
         }
       }
-      
-      setText(bestResult.data.text);
+      const extractedText = bestResult.data.text;
+      setText(extractedText);
+      saveToHistory(image, imagePreview, extractedText);
     } catch (error) {
       console.error('OCR Error:', error);
       setText('Error extracting text. Please try another image.');
