@@ -120,4 +120,54 @@ describe('JsonViewer Page', () => {
       expect(screen.getByPlaceholderText(/Paste your JSON here/)).toBeInTheDocument();
     });
   });
+
+  it('parses JSON file successfully on upload', async () => {
+    render(<JsonViewer />);
+
+    const file = new File(['{"uploadSuccess":true,"number":123}'], 'test_data.json', { type: 'application/json' });
+    const fileInput = screen.getByTestId('json-file-input');
+
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Valid JSON')).toBeInTheDocument();
+      expect(screen.getByText('(test_data.json)')).toBeInTheDocument();
+      expect(screen.getByText('"uploadSuccess"')).toBeInTheDocument();
+      expect(screen.getByText('true')).toBeInTheDocument();
+      expect(screen.getByText('123')).toBeInTheDocument();
+    });
+  });
+
+  it('displays error when invalid JSON file is uploaded', async () => {
+    render(<JsonViewer />);
+
+    const file = new File(['{invalidJson: true}'], 'bad_data.json', { type: 'application/json' });
+    const fileInput = screen.getByTestId('json-file-input');
+
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Invalid JSON/)).toBeInTheDocument();
+    });
+  });
+
+  it('handles drop events correctly with .json file extension', async () => {
+    render(<JsonViewer />);
+
+    const uploadZone = screen.getByText(/Click or drag your \.json file here/);
+    const file = new File(['{"dropped":true}'], 'drop_data.json', { type: 'application/json' });
+
+    fireEvent.drop(uploadZone, {
+      dataTransfer: {
+        files: [file],
+        types: ['Files']
+      }
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Valid JSON')).toBeInTheDocument();
+      expect(screen.getByText('(drop_data.json)')).toBeInTheDocument();
+      expect(screen.getByText('"dropped"')).toBeInTheDocument();
+    });
+  });
 });
