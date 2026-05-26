@@ -12,6 +12,65 @@
 }
 
 /* ---- Input Section ---- */
+.json-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  align-items: stretch;
+}
+
+@media (max-width: 868px) {
+  .json-input-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.json-upload-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2.5rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-height: 250px;
+}
+
+.json-upload-zone:hover {
+  border-color: #c084fc;
+  background: rgba(192, 132, 252, 0.05);
+}
+
+.json-upload-zone h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.json-upload-zone p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.json-upload-zone .upload-icon {
+  color: var(--text-secondary);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.json-upload-zone:hover .upload-icon {
+  transform: translateY(-4px);
+  color: #c084fc;
+}
+
 .json-input-section {
   padding: 1.25rem;
   display: flex;
@@ -140,6 +199,16 @@
   gap: 0.35rem;
   font-size: 0.85rem;
   color: var(--text-secondary);
+}
+
+.toolbar-filename {
+  font-size: 0.85rem;
+  color: #c084fc;
+  font-weight: 500;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .status-dot {

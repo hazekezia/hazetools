@@ -85,6 +85,7 @@ const JsonViewer = () => {
   const [showInput, setShowInput] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [fileName, setFileName] = useState('');
   const fileInputRef = useRef(null);
 
   const handleInputChange = (e) => {
@@ -92,6 +93,7 @@ const JsonViewer = () => {
     setError(null);
     setParsed(null);
     setSearchResults([]);
+    setFileName('');
   };
 
   const handleParse = () => {
@@ -113,6 +115,7 @@ const JsonViewer = () => {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    setFileName(file.name);
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target.result;
@@ -134,7 +137,7 @@ const JsonViewer = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file && file.type === 'application/json') {
+    if (file && (file.type === 'application/json' || file.name.endsWith('.json'))) {
       const event = { target: { files: [file] } };
       handleFileUpload(event);
     }
@@ -157,7 +160,7 @@ const JsonViewer = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'data.json';
+      a.download = fileName || 'data.json';
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -215,8 +218,8 @@ const JsonViewer = () => {
     const lowerQuery = query.toLowerCase();
     const results = flat.filter(
       (item) =>
-        item.path.toLowerCase().includes(lowerQuery) ||
-        String(item.value).toLowerCase().includes(lowerQuery)
+          item.path.toLowerCase().includes(lowerQuery) ||
+          String(item.value).toLowerCase().includes(lowerQuery)
     );
     setSearchResults(results.slice(0, 50)); // limit
   }, [parsed]);
@@ -233,6 +236,7 @@ const JsonViewer = () => {
     setShowInput(true);
     setSearchQuery('');
     setSearchResults([]);
+    setFileName('');
   };
 
   // Toggle between input and tree view
@@ -251,61 +255,65 @@ const JsonViewer = () => {
       <div className="json-content">
         {/* Input Section */}
         {showInput && (
-          <div
-            className="json-input-section glass-panel"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-          >
-            <div className="json-input-header">
-              <h3>Input JSON</h3>
-              <div className="input-actions">
+          <div className="json-input-grid">
+            {/* Upload Zone */}
+            <div
+              className="json-upload-zone glass-panel"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              style={{ cursor: 'pointer' }}
+            >
+              <Upload size={48} className="upload-icon" />
+              <h3>Click or drag your .json file here</h3>
+              <p>Fully secure client-side JSON processing</p>
+              <input
+                type="file"
+                data-testid="json-file-input"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept=".json,application/json"
+                style={{ display: 'none' }}
+              />
+            </div>
+
+            {/* Text Area Input */}
+            <div className="json-input-section glass-panel">
+              <div className="json-input-header">
+                <h3>Or Paste/Type JSON</h3>
+              </div>
+              <textarea
+                className="json-textarea input-field"
+                value={inputText}
+                onChange={handleInputChange}
+                placeholder='Paste your JSON here, e.g. { "key": "value" }'
+                rows={10}
+                spellCheck={false}
+              />
+              <div className="json-input-footer">
+                <div className="format-buttons">
+                  <button className="btn-primary btn-sm" onClick={handleBeautify} disabled={!inputText.trim()}>
+                    Beautify
+                  </button>
+                  <button className="btn-primary btn-sm" onClick={handleMinify} disabled={!inputText.trim()}>
+                    Minify
+                  </button>
+                </div>
                 <button
-                  className="btn-icon"
-                  onClick={() => fileInputRef.current?.click()}
-                  title="Upload JSON file"
+                  className="btn-primary"
+                  onClick={handleParse}
+                  disabled={!inputText.trim()}
                 >
-                  <Upload size={18} />
+                  Parse
                 </button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileUpload}
-                  accept=".json,application/json"
-                  style={{ display: 'none' }}
-                />
               </div>
+              {error && (
+                <div className="json-error">
+                  <AlertCircle size={18} />
+                  <span>Invalid JSON: {error}</span>
+                </div>
+              )}
             </div>
-            <textarea
-              className="json-textarea input-field"
-              value={inputText}
-              onChange={handleInputChange}
-              placeholder='Paste your JSON here, e.g. { "key": "value" }'
-              rows={10}
-              spellCheck={false}
-            />
-            <div className="json-input-footer">
-              <div className="format-buttons">
-                <button className="btn-primary btn-sm" onClick={handleBeautify} disabled={!inputText.trim()}>
-                  Beautify
-                </button>
-                <button className="btn-primary btn-sm" onClick={handleMinify} disabled={!inputText.trim()}>
-                  Minify
-                </button>
-              </div>
-              <button
-                className="btn-primary"
-                onClick={handleParse}
-                disabled={!inputText.trim()}
-              >
-                Parse
-              </button>
-            </div>
-            {error && (
-              <div className="json-error">
-                <AlertCircle size={18} />
-                <span>Invalid JSON: {error}</span>
-              </div>
-            )}
           </div>
         )}
 
@@ -317,6 +325,11 @@ const JsonViewer = () => {
                 <span className="toolbar-status">
                   Valid JSON <span className="status-dot success"></span>
                 </span>
+                {fileName && (
+                  <span className="toolbar-filename" title={fileName}>
+                    ({fileName})
+                  </span>
+                )}
                 <div className="search-box">
                   <Search size={16} />
                   <input
