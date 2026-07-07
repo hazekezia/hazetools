@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ScanText, TableProperties, FileJson, ArrowRight } from 'lucide-react';
-import './Home.css';
+import { ScanText, TableProperties, FileJson, Key, ArrowRight } from 'lucide-react';
+import '../css/Home.css';
 
 const Home = () => {
   const tools = [
@@ -27,6 +27,14 @@ const Home = () => {
       icon: <FileJson size={22} className="tool-icon" />,
       path: '/json-viewer',
       color: 'green'
+    },
+    {
+      id: 'ai-key-tester',
+      title: 'AI API Key Tester',
+      description: 'Test and verify your AI provider keys (OpenAI, Anthropic, Gemini, Groq, etc.) locally and securely.',
+      icon: <Key size={22} className="tool-icon" />,
+      path: '/ai-key-tester',
+      color: 'violet'
     }
   ];
 

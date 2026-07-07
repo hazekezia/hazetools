@@ -65,6 +65,13 @@
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
 }
 
+.tool-card.violet:hover .icon-wrapper {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #a78bfa;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+}
+
 .tool-card .tool-icon {
   color: var(--text-secondary);
   transition: all 0.25s ease;

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 import { Upload, Copy, Check, Loader2, X, Clock, ImageIcon } from 'lucide-react';
-import './ImageToText.css';
+import '../css/ImageToText.css';
 
 const ImageToText = () => {
   const [image, setImage] = useState(null);

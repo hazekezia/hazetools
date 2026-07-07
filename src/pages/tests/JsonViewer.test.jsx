@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import JsonViewer from './JsonViewer';
+import JsonViewer from '../jsx/JsonViewer';
 
 describe('JsonViewer Page', () => {
   it('renders input section initially', () => {

@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import ImageToText from './pages/ImageToText';
-import CsvViewer from './pages/CsvViewer';
-import JsonViewer from './pages/JsonViewer';
+import Home from './pages/jsx/Home';
+import ImageToText from './pages/jsx/ImageToText';
+import CsvViewer from './pages/jsx/CsvViewer';
+import JsonViewer from './pages/jsx/JsonViewer';
+import AiKeyTester from './pages/jsx/AiKeyTester';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="image-to-text" element={<ImageToText />} />
           <Route path="csv-viewer" element={<CsvViewer />} />
           <Route path="json-viewer" element={<JsonViewer />} />
+          <Route path="ai-key-tester" element={<AiKeyTester />} />
         </Route>
       </Routes>
     </BrowserRouter>
