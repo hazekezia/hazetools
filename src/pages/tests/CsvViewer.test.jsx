@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import CsvViewer from './CsvViewer';
+import CsvViewer from '../jsx/CsvViewer';
 
 // Mock Papa.parse
 vi.mock('papaparse', () => ({

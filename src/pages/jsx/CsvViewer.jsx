@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import Papa from 'papaparse';
 import { Upload, Search, ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, Loader2 } from 'lucide-react';
-import './CsvViewer.css';
+import '../css/CsvViewer.css';
 
 const CsvViewer = () => {
   const [data, setData] = useState([]);

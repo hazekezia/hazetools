@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useCallback } from 'react';
 import { Upload, Copy, Check, Download, Minus, Plus, Search, AlertCircle, Eye, EyeOff, FileJson } from 'lucide-react';
-import './JsonViewer.css';
+import '../css/JsonViewer.css';
 
 // Helper: safe JSON parse
 const safeParse = (str) => {

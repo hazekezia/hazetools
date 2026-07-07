@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import ImageToText from './ImageToText';
+import ImageToText from '../jsx/ImageToText';
 
 // Mock Tesseract
 vi.mock('tesseract.js', () => ({
