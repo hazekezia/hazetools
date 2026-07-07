@@ -588,3 +588,35 @@ select.input-field {
   padding-left: 0.75rem;
   margin-top: 0.25rem;
 }
+
+.label-row {
+  display: flex;
+  align-items: center;
+}
+
+.models-link-wrapper {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: var(--text-secondary);
+  margin-left: 0.5rem;
+}
+
+.models-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.models-link:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.warning-notice {
+  font-size: 0.8rem;
+  color: #f87171;
+  border-left: 2px solid #ef4444;
+  padding-left: 0.75rem;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}

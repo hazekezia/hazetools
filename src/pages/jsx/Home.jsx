@@ -30,7 +30,7 @@ const Home = () => {
     },
     {
       id: 'ai-key-tester',
-      title: 'AI API Key Tester',
+      title: 'AI Key Lab',
       description: 'Test and verify your AI provider keys (OpenAI, Anthropic, Gemini, Groq, etc.) locally and securely.',
       icon: <Key size={22} className="tool-icon" />,
       path: '/ai-key-tester',

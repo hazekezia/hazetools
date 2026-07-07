@@ -17,10 +17,10 @@ describe('AiKeyTester Page', () => {
   it('renders the tester form with initial configurations', () => {
     render(<AiKeyTester />);
     
-    expect(screen.getByText('AI API Key Tester')).toBeInTheDocument();
+    expect(screen.getByText('AI Key Lab')).toBeInTheDocument();
     expect(screen.getByLabelText('AI Provider')).toBeInTheDocument();
     expect(screen.getByLabelText('API Key')).toBeInTheDocument();
-    expect(screen.getByLabelText('Model Name')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Model Name/i)).toBeInTheDocument();
     expect(screen.getByText('Use CORS Proxy (Bypass browser CORS restrictions)')).toBeInTheDocument();
     expect(screen.getByText('Test API Key')).toBeInTheDocument();
     expect(screen.getByText('Waiting for Test')).toBeInTheDocument();
@@ -30,18 +30,18 @@ describe('AiKeyTester Page', () => {
     render(<AiKeyTester />);
     
     const providerSelect = screen.getByLabelText('AI Provider');
-    const modelInput = screen.getByLabelText('Model Name');
+    const modelInput = screen.getByLabelText(/Model Name/i);
 
-    // Default should be OpenAI's gpt-4o-mini
-    expect(modelInput.value).toBe('gpt-4o-mini');
+    // Default should be OpenAI's gpt-5.5
+    expect(modelInput.value).toBe('gpt-5.5');
 
     // Switch to Anthropic
     fireEvent.change(providerSelect, { target: { value: 'anthropic' } });
-    expect(modelInput.value).toBe('claude-3-5-sonnet-20240620');
+    expect(modelInput.value).toBe('claude-opus-4-8');
 
     // Switch to Gemini
     fireEvent.change(providerSelect, { target: { value: 'gemini' } });
-    expect(modelInput.value).toBe('gemini-2.5-flash');
+    expect(modelInput.value).toBe('gemini-3.5-flash');
   });
 
   it('shows error if API Key is empty for OpenAI', async () => {
@@ -137,11 +137,13 @@ describe('AiKeyTester Page', () => {
   it('toggles advanced settings and displays editable inputs', () => {
     render(<AiKeyTester />);
     
+    // Endpoint URL should be visible initially (outside advanced)
+    expect(screen.getByLabelText('Endpoint URL')).toBeInTheDocument();
+
     // Toggle advanced settings
     const advancedToggle = screen.getByText(/Advanced \/ Custom Payload/);
     fireEvent.click(advancedToggle);
 
-    expect(screen.getByLabelText('Endpoint URL')).toBeInTheDocument();
     expect(screen.getByLabelText('Test Prompt')).toBeInTheDocument();
     expect(screen.getByText('Request Headers (JSON)')).toBeInTheDocument();
     expect(screen.getByText('Request Body (JSON)')).toBeInTheDocument();

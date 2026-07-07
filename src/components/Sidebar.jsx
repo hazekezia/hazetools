@@ -8,7 +8,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/image-to-text', label: 'Image to Text', icon: <ScanText size={20} /> },
     { path: '/csv-viewer', label: 'CSV Viewer', icon: <TableProperties size={20} /> },
     { path: '/json-viewer', label: 'JSON Viewer', icon: <FileJson size={20} /> },
-    { path: '/ai-key-tester', label: 'AI Key Tester', icon: <Key size={20} /> },
+    { path: '/ai-key-tester', label: 'AI Key Lab', icon: <Key size={20} /> },
   ];
 
   return (

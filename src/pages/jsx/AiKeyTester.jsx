@@ -25,8 +25,10 @@ import '../css/AiKeyTester.css';
 const PROVIDERS = {
   openai: {
     name: 'OpenAI',
-    defaultModel: 'gpt-4o-mini',
+    defaultModel: 'gpt-5.5',
     defaultUrl: 'https://api.openai.com/v1/chat/completions',
+    modelListUrl: 'https://platform.openai.com/docs/models',
+    placeholderModel: 'gpt-5.5',
     headers: (key) => ({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${key}`
@@ -39,8 +41,10 @@ const PROVIDERS = {
   },
   anthropic: {
     name: 'Anthropic',
-    defaultModel: 'claude-3-5-sonnet-20240620',
+    defaultModel: 'claude-opus-4-8',
     defaultUrl: 'https://api.anthropic.com/v1/messages',
+    modelListUrl: 'https://docs.anthropic.com/en/docs/about-claude/models',
+    placeholderModel: 'claude-opus-4-8',
     headers: (key) => ({
       'Content-Type': 'application/json',
       'x-api-key': key,
@@ -54,8 +58,10 @@ const PROVIDERS = {
   },
   gemini: {
     name: 'Google Gemini',
-    defaultModel: 'gemini-2.5-flash',
-    defaultUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+    defaultModel: 'gemini-3.5-flash',
+    defaultUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent',
+    modelListUrl: 'https://ai.google.dev/gemini-api/docs/models/gemini',
+    placeholderModel: 'gemini-3.5-flash',
     headers: () => ({
       'Content-Type': 'application/json'
     }),
@@ -68,6 +74,7 @@ const PROVIDERS = {
     name: 'Groq',
     defaultModel: 'llama-3.3-70b-versatile',
     defaultUrl: 'https://api.groq.com/openai/v1/chat/completions',
+    modelListUrl: 'https://console.groq.com/docs/models',
     headers: (key) => ({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${key}`
@@ -80,8 +87,10 @@ const PROVIDERS = {
   },
   openrouter: {
     name: 'OpenRouter',
-    defaultModel: 'google/gemini-2.5-flash',
+    defaultModel: 'nvidia/nemotron-3-ultra-550b-a55b:free',
     defaultUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    modelListUrl: 'https://openrouter.ai/models',
+    placeholderModel: 'nvidia/nemotron-3-ultra-550b-a55b:free',
     headers: (key) => ({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${key}`,
@@ -94,10 +103,42 @@ const PROVIDERS = {
       max_tokens: 10
     })
   },
-  cohere: {
-    name: 'Cohere',
-    defaultModel: 'command-r-plus',
-    defaultUrl: 'https://api.cohere.com/v2/chat',
+  deepseek: {
+    name: 'DeepSeek',
+    defaultModel: 'deepseek-v4-pro',
+    defaultUrl: 'https://api.deepseek.com/chat/completions',
+    modelListUrl: 'https://api-docs.deepseek.com/quick_start/pricing',
+    placeholderModel: 'deepseek-v4-pro',
+    headers: (key) => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`
+    }),
+    body: (model, prompt) => ({
+      model: model,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 10
+    })
+  },
+  minimax: {
+    name: 'MiniMax',
+    defaultModel: 'MiniMax-M3',
+    defaultUrl: 'https://api.minimax.io/v1/chat/completions',
+    modelListUrl: 'https://www.minimaxi.com/document/fast-start/model-introduction',
+    headers: (key) => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`
+    }),
+    body: (model, prompt) => ({
+      model: model,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 10
+    })
+  },
+  xiaomi_mimo: {
+    name: 'Xiaomi MiMo',
+    defaultModel: 'mimo-v2.5-pro',
+    defaultUrl: 'https://api.xiaomimimo.com/v1/chat/completions',
+    modelListUrl: 'https://mimo.mi.com/docs/en-US/quick-start/summary/model',
     headers: (key) => ({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${key}`
@@ -130,7 +171,7 @@ const AiKeyTester = () => {
   const [showKey, setShowKey] = useState(false);
   const [model, setModel] = useState(PROVIDERS.openai.defaultModel);
   const [endpointUrl, setEndpointUrl] = useState(PROVIDERS.openai.defaultUrl);
-  const [prompt, setPrompt] = useState('Ping');
+  const [prompt, setPrompt] = useState("Respond with 'Pong!' and nothing else.");
   const [corsProxy, setCorsProxy] = useState('');
   const [useProxy, setUseProxy] = useState(false);
 
@@ -286,7 +327,15 @@ const AiKeyTester = () => {
         let extractedText = '';
         let isValid = false;
 
-        if (provider === 'openai' || provider === 'groq' || provider === 'openrouter' || provider === 'custom') {
+        if (
+          provider === 'openai' || 
+          provider === 'groq' || 
+          provider === 'openrouter' || 
+          provider === 'deepseek' || 
+          provider === 'minimax' || 
+          provider === 'xiaomi_mimo' || 
+          provider === 'custom'
+        ) {
           extractedText = responseData.choices?.[0]?.message?.content || JSON.stringify(responseData);
           isValid = true;
         } else if (provider === 'anthropic') {
@@ -294,9 +343,6 @@ const AiKeyTester = () => {
           isValid = true;
         } else if (provider === 'gemini') {
           extractedText = responseData.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(responseData);
-          isValid = true;
-        } else if (provider === 'cohere') {
-          extractedText = responseData.message?.content?.[0]?.text || JSON.stringify(responseData);
           isValid = true;
         }
 
@@ -356,7 +402,7 @@ const AiKeyTester = () => {
   return (
     <div className="tool-page-container">
       <div className="tool-page-header">
-        <h1 className="page-title">AI API Key Tester</h1>
+        <h1 className="page-title">AI Key Lab</h1>
         <p className="page-subtitle">Test the validity and latency of your AI provider API keys securely directly from the browser.</p>
       </div>
 
@@ -381,6 +427,19 @@ const AiKeyTester = () => {
                   <option key={key} value={key}>{val.name}</option>
                 ))}
               </select>
+            </div>
+
+            {/* Endpoint URL */}
+            <div className="form-group">
+              <label htmlFor="endpoint-input">Endpoint URL</label>
+              <input
+                id="endpoint-input"
+                type="text"
+                className="input-field"
+                value={endpointUrl}
+                onChange={(e) => setEndpointUrl(e.target.value)}
+                placeholder="https://api.openai.com/v1/chat/completions"
+              />
             </div>
 
             {/* API Key Input */}
@@ -410,14 +469,30 @@ const AiKeyTester = () => {
 
             {/* Model Name Override */}
             <div className="form-group">
-              <label htmlFor="model-input">Model Name</label>
+              <div className="label-row">
+                <label htmlFor="model-input">Model Name</label>
+                {PROVIDERS[provider]?.modelListUrl && (
+                  <span className="models-link-wrapper">
+                    (see{' '}
+                    <a
+                      href={PROVIDERS[provider].modelListUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="models-link"
+                    >
+                      models here
+                    </a>
+                    )
+                  </span>
+                )}
+              </div>
               <div className="model-input-wrapper">
                 <Cpu size={16} className="input-icon" />
                 <input
                   id="model-input"
                   type="text"
                   className="input-field icon-padding"
-                  placeholder="Model name, e.g. gpt-4o-mini"
+                  placeholder={`Model name, e.g. ${PROVIDERS[provider]?.placeholderModel || PROVIDERS[provider]?.defaultModel}`}
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
                 />
@@ -465,19 +540,6 @@ const AiKeyTester = () => {
 
             {showAdvanced && (
               <div className="advanced-fields">
-                {/* Custom Endpoint URL */}
-                <div className="form-group">
-                  <label htmlFor="endpoint-input">Endpoint URL</label>
-                  <input
-                    id="endpoint-input"
-                    type="text"
-                    className="input-field"
-                    value={endpointUrl}
-                    onChange={(e) => setEndpointUrl(e.target.value)}
-                    placeholder="https://api.openai.com/v1/chat/completions"
-                  />
-                </div>
-
                 {/* Prompt Test Override */}
                 <div className="form-group">
                   <label htmlFor="prompt-override-input">Test Prompt</label>
@@ -487,7 +549,7 @@ const AiKeyTester = () => {
                     className="input-field"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Ping"
+                    placeholder="Respond with 'Pong!' and nothing else."
                   />
                 </div>
 
@@ -672,9 +734,9 @@ const AiKeyTester = () => {
       <div className="info-notice-card glass-panel">
         <AlertCircle size={20} className="notice-icon" />
         <div className="notice-text">
-          <h5>Security Note & Browser CORS Limitations</h5>
+          <h5>Disclaimer</h5>
           <p>
-            All API keys you test here are processed locally directly in your browser and are never sent or stored on any server. However, for security reasons, most major AI providers (like OpenAI and Anthropic) restrict direct client-side requests by default (CORS block).
+            All API keys you test here are processed locally directly in your browser and are never sent or stored on any server. However, for security reasons, most major AI providers (like OpenAI and Anthropic) restrict direct client-side requests by default (CORS block). If you are concerned about your API keys being exposed or leaked, please do not use this service.
           </p>
           <p className="sub-notice">
             To test them, enable the <strong>"Use CORS Proxy"</strong> option in the left panel, or use a CORS bypass browser extension (such as <em>Allow CORS: Access-Control-Allow-Origin</em>).
