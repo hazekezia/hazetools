@@ -14,7 +14,7 @@ const ImageToText = () => {
     try {
       const saved = sessionStorage.getItem('ocr-history');
       return saved ? JSON.parse(saved) : [];
-    } catch (e) {
+    } catch {
       return [];
     }
   });

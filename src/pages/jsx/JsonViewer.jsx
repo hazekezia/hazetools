@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useRef, useMemo, useCallback } from 'react';
-import { Upload, Copy, Check, Download, Minus, Plus, Search, AlertCircle, Eye, EyeOff, FileJson } from 'lucide-react';
+import { Upload, Copy, Check, Download, Minus, Plus, Search, AlertCircle, EyeOff, FileJson } from 'lucide-react';
 import '../css/JsonViewer.css';
 
 // Helper: safe JSON parse
@@ -222,7 +223,7 @@ const JsonViewer = () => {
           String(item.value).toLowerCase().includes(lowerQuery)
     );
     setSearchResults(results.slice(0, 50)); // limit
-  }, [parsed]);
+  }, [parsed, flattenObject]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);

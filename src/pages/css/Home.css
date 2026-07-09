@@ -72,6 +72,13 @@
   box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
 }
 
+.tool-card.pink:hover .icon-wrapper {
+  background: rgba(236, 72, 153, 0.12);
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #f472b6;
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.15);
+}
+
 .tool-card .tool-icon {
   color: var(--text-secondary);
   transition: all 0.25s ease;
