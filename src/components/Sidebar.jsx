@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, ScanText, TableProperties, FileJson, Key, X } from 'lucide-react';
+import { Home, ScanText, TableProperties, FileJson, Key, X, Search } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <Home size={20} /> },
     { path: '/image-to-text', label: 'Image to Text', icon: <ScanText size={20} /> },
@@ -10,6 +13,10 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/json-viewer', label: 'JSON Viewer', icon: <FileJson size={20} /> },
     { path: '/ai-key-tester', label: 'AI Key Lab', icon: <Key size={20} /> },
   ];
+
+  const filteredItems = navItems.filter((item) =>
+    item.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <aside className={`sidebar glass-panel ${isOpen ? 'open' : ''}`}>
@@ -19,19 +26,47 @@ const Sidebar = ({ isOpen, onClose }) => {
           <X size={24} />
         </button>
       </div>
+
       <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            onClick={onClose}
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
+        {filteredItems.length > 0 ? (
+          filteredItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              onClick={onClose}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </NavLink>
+          ))
+        ) : (
+          <div className="no-results-msg">No tools found</div>
+        )}
       </nav>
+
+      <div className="sidebar-search">
+        <div className="search-input-wrapper">
+          <Search size={14} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search tools..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button 
+              type="button" 
+              className="clear-search-btn"
+              onClick={() => setSearchQuery('')}
+              title="Clear Search"
+            >
+              <X size={12} />
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="sidebar-footer">
         <p className="credit-text">credit by hazekezia</p>
