@@ -73,7 +73,26 @@ select.input-field {
 }
 
 .key-input {
-  padding-right: 2.5rem !important;
+  padding-right: 4rem !important;
+}
+
+.clear-key-btn {
+  position: absolute;
+  right: 2.4rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.clear-key-btn:hover {
+  color: var(--text-primary);
 }
 
 .toggle-key-btn {

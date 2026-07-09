@@ -18,7 +18,8 @@ import {
   Terminal,
   Activity,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  X
 } from 'lucide-react';
 import '../css/AiKeyTester.css';
 
@@ -197,6 +198,7 @@ const AiKeyTester = () => {
     setEndpointUrl(config.defaultUrl);
     setCustomHeaders(JSON.stringify(config.headers('YOUR_API_KEY_HERE'), null, 2));
     setCustomBody(JSON.stringify(config.body(config.defaultModel, prompt), null, 2));
+    setApiKey('');
   }, [provider]);
 
   // Sync custom body when model or prompt changes (if not in advanced mode or body matches default structure)
@@ -455,6 +457,16 @@ const AiKeyTester = () => {
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                   />
+                  {apiKey && (
+                    <button 
+                      type="button"
+                      className="clear-key-btn" 
+                      onClick={() => setApiKey('')}
+                      title="Clear Key"
+                    >
+                      <X size={18} />
+                    </button>
+                  )}
                   <button 
                     type="button"
                     className="toggle-key-btn" 

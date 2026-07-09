@@ -44,6 +44,47 @@ describe('AiKeyTester Page', () => {
     expect(modelInput.value).toBe('gemini-3.5-flash');
   });
 
+  it('clears API key when provider is switched', () => {
+    render(<AiKeyTester />);
+    
+    const providerSelect = screen.getByLabelText('AI Provider');
+    const keyInput = screen.getByPlaceholderText('Enter OpenAI API Key');
+    
+    // Set a key
+    fireEvent.change(keyInput, { target: { value: 'sk-testkey123' } });
+    expect(keyInput.value).toBe('sk-testkey123');
+    
+    // Switch to Anthropic
+    fireEvent.change(providerSelect, { target: { value: 'anthropic' } });
+    
+    // Key should be cleared
+    const anthropicKeyInput = screen.getByPlaceholderText('Enter Anthropic API Key');
+    expect(anthropicKeyInput.value).toBe('');
+  });
+
+  it('clears API key when clear button (X) is clicked', () => {
+    render(<AiKeyTester />);
+    
+    const keyInput = screen.getByPlaceholderText('Enter OpenAI API Key');
+    
+    // Set a key
+    fireEvent.change(keyInput, { target: { value: 'sk-testkey123' } });
+    expect(keyInput.value).toBe('sk-testkey123');
+    
+    // The clear button should now be visible
+    const clearButton = screen.getByTitle('Clear Key');
+    expect(clearButton).toBeInTheDocument();
+    
+    // Click clear
+    fireEvent.click(clearButton);
+    
+    // Key should be cleared
+    expect(keyInput.value).toBe('');
+    
+    // Clear button should be hidden
+    expect(screen.queryByTitle('Clear Key')).not.toBeInTheDocument();
+  });
+
   it('shows error if API Key is empty for OpenAI', async () => {
     render(<AiKeyTester />);
     
