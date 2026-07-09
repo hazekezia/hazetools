@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ScanText, TableProperties, FileJson, Key, ArrowRight } from 'lucide-react';
+import { ScanText, TableProperties, FileJson, Key, ArrowRight, Palette } from 'lucide-react';
 import '../css/Home.css';
 
 const Home = () => {
@@ -35,6 +35,14 @@ const Home = () => {
       icon: <Key size={22} className="tool-icon" />,
       path: '/ai-key-tester',
       color: 'violet'
+    },
+    {
+      id: 'color-toolkit',
+      title: 'Color Toolkit',
+      description: 'A comprehensive suite of color tools for designers and developers.',
+      icon: <Palette size={22} className="tool-icon" />,
+      path: '/color-toolkit',
+      color: 'pink'
     }
   ];
 

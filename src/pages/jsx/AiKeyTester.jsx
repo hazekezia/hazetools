@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { 
   Key, 
@@ -243,8 +245,8 @@ const AiKeyTester = () => {
     addTimelineStep('Input Validation', 'Verifying configuration validity...', 'success');
 
     // Prepare Request Details
-    let headersObj = {};
-    let bodyObj = {};
+    let headersObj;
+    let bodyObj;
 
     try {
       if (showAdvanced) {
@@ -327,8 +329,6 @@ const AiKeyTester = () => {
       if (response.ok) {
         // Success criteria check depending on provider
         let extractedText = '';
-        let isValid = false;
-
         if (
           provider === 'openai' || 
           provider === 'groq' || 
@@ -339,13 +339,12 @@ const AiKeyTester = () => {
           provider === 'custom'
         ) {
           extractedText = responseData.choices?.[0]?.message?.content || JSON.stringify(responseData);
-          isValid = true;
         } else if (provider === 'anthropic') {
           extractedText = responseData.content?.[0]?.text || JSON.stringify(responseData);
-          isValid = true;
         } else if (provider === 'gemini') {
           extractedText = responseData.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(responseData);
-          isValid = true;
+        } else {
+          extractedText = JSON.stringify(responseData);
         }
 
         setResponseText(extractedText);

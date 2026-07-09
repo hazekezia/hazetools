@@ -14,5 +14,6 @@ describe('Home Page', () => {
     expect(screen.getByText('Image to Text (OCR)')).toBeInTheDocument();
     expect(screen.getByText('CSV Viewer')).toBeInTheDocument();
     expect(screen.getByText('JSON Viewer')).toBeInTheDocument();
+    expect(screen.getByText('Color Toolkit')).toBeInTheDocument();
   });
 });
