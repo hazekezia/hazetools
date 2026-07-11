@@ -9,6 +9,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .content-wrapper {
@@ -17,6 +18,7 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+  min-width: 0;
 }
 
 /* Mobile Header (Hidden on Desktop) */

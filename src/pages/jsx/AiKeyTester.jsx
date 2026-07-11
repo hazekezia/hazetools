@@ -156,10 +156,11 @@ const PROVIDERS = {
     name: 'Custom Endpoint',
     defaultModel: 'custom-model',
     defaultUrl: 'http://localhost:11434/v1/chat/completions',
-    headers: (key) => ({
-      'Content-Type': 'application/json',
-      'Authorization': key ? `Bearer ${key}` : ''
-    }),
+    headers: (key) => {
+      const hdrs = { 'Content-Type': 'application/json' };
+      if (key) hdrs['Authorization'] = `Bearer ${key}`;
+      return hdrs;
+    },
     body: (model, prompt) => ({
       model: model,
       messages: [{ role: 'user', content: prompt }],
@@ -203,21 +204,15 @@ const AiKeyTester = () => {
     setApiKey('');
   }, [provider]);
 
-  // Sync custom body when model or prompt changes (if not in advanced mode or body matches default structure)
+  // Sync custom body when model or prompt changes
   useEffect(() => {
-    if (!showAdvanced) {
-      const config = PROVIDERS[provider];
-      setCustomBody(JSON.stringify(config.body(model, prompt), null, 2));
-    }
-  }, [model, prompt, provider, showAdvanced]);
+    const config = PROVIDERS[provider];
+    setCustomBody(JSON.stringify(config.body(model, prompt), null, 2));
+  }, [model, prompt, provider]);
 
-  // Sync custom headers when apiKey changes (if not in advanced mode)
-  useEffect(() => {
-    if (!showAdvanced) {
-      const config = PROVIDERS[provider];
-      setCustomHeaders(JSON.stringify(config.headers(apiKey || 'YOUR_API_KEY_HERE'), null, 2));
-    }
-  }, [apiKey, provider, showAdvanced]);
+  // Note: customHeaders is intentionally NOT synced when apiKey changes to prevent
+  // exposing the real key in plain text within the textarea.
+  // The 'YOUR_API_KEY_HERE' placeholder is replaced during submission in handleTestKey.
 
   const addTimelineStep = (label, statusMsg, stepStatus) => {
     setTimeline(prev => [...prev, { label, message: statusMsg, status: stepStatus }]);
@@ -254,7 +249,12 @@ const AiKeyTester = () => {
         // Replace placeholder api key with real one in custom headers
         Object.keys(headersObj).forEach(key => {
           if (typeof headersObj[key] === 'string' && headersObj[key].includes('YOUR_API_KEY_HERE')) {
-            headersObj[key] = headersObj[key].replace('YOUR_API_KEY_HERE', apiKey);
+            const replaced = headersObj[key].replace('YOUR_API_KEY_HERE', apiKey);
+            if (replaced.trim() === 'Bearer' || replaced.trim() === '') {
+              delete headersObj[key];
+            } else {
+              headersObj[key] = replaced;
+            }
           }
         });
         bodyObj = JSON.parse(customBody);
@@ -444,39 +444,39 @@ const AiKeyTester = () => {
             </div>
 
             {/* API Key Input */}
-            {provider !== 'custom' && (
-              <div className="form-group">
-                <label htmlFor="api-key-input">API Key</label>
-                <div className="api-key-input-wrapper">
-                  <input
-                    id="api-key-input"
-                    type={showKey ? 'text' : 'password'}
-                    className="input-field key-input"
-                    placeholder={`Enter ${PROVIDERS[provider].name} API Key`}
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                  />
-                  {apiKey && (
-                    <button 
-                      type="button"
-                      className="clear-key-btn" 
-                      onClick={() => setApiKey('')}
-                      title="Clear Key"
-                    >
-                      <X size={18} />
-                    </button>
-                  )}
+            <div className="form-group">
+              <label htmlFor="api-key-input">
+                API Key {provider === 'custom' && '(Optional)'}
+              </label>
+              <div className="api-key-input-wrapper">
+                <input
+                  id="api-key-input"
+                  type={showKey ? 'text' : 'password'}
+                  className="input-field key-input"
+                  placeholder={provider === 'custom' ? 'Optional API Key' : `Enter ${PROVIDERS[provider].name} API Key`}
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+                {apiKey && (
                   <button 
                     type="button"
-                    className="toggle-key-btn" 
-                    onClick={() => setShowKey(!showKey)}
-                    title={showKey ? "Hide Key" : "Show Key"}
+                    className="clear-key-btn" 
+                    onClick={() => setApiKey('')}
+                    title="Clear Key"
                   >
-                    {showKey ? <EyeOff size={18} /> : <Eye size={18} />}
+                    <X size={18} />
                   </button>
-                </div>
+                )}
+                <button 
+                  type="button"
+                  className="toggle-key-btn" 
+                  onClick={() => setShowKey(!showKey)}
+                  title={showKey ? "Hide Key" : "Show Key"}
+                >
+                  {showKey ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
-            )}
+            </div>
 
             {/* Model Name Override */}
             <div className="form-group">

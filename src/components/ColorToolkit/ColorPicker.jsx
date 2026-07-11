@@ -175,7 +175,7 @@ const ColorPicker = ({ historyProps, showToast }) => {
         
         <div className="color-input-group">
           <label>RGB(A)</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="color-input-row">
             <div className="color-input-wrapper">
               <span className="color-input-prefix">R</span>
               <input type="number" min="0" max="255" value={color.r} onChange={(e) => handleRgbChange('r', e.target.value)} />
@@ -202,7 +202,7 @@ const ColorPicker = ({ historyProps, showToast }) => {
 
         <div className="color-input-group">
           <label>HSL</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="color-input-row">
             <div className="color-input-wrapper">
               <span className="color-input-prefix">H</span>
               <input type="number" min="0" max="360" value={hsl.h} onChange={(e) => handleHslChange('h', e.target.value)} />
@@ -225,7 +225,7 @@ const ColorPicker = ({ historyProps, showToast }) => {
         
         <div className="color-input-group">
           <label>HSV</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="color-input-row">
             <div className="color-input-wrapper">
               <span className="color-input-prefix">H</span>
               <input type="number" min="0" max="360" value={hsv.h} onChange={(e) => handleHsvChange('h', e.target.value)} />
