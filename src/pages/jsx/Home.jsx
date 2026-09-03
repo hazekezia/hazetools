@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ScanText, TableProperties, FileJson, Key, ArrowRight, Palette } from 'lucide-react';
+import { ScanText, TableProperties, FileJson, Key, ArrowRight, Palette, FileCode } from 'lucide-react';
 import '../css/Home.css';
 
 const Home = () => {
@@ -43,6 +43,14 @@ const Home = () => {
       icon: <Palette size={22} className="tool-icon" />,
       path: '/color-toolkit',
       color: 'pink'
+    },
+    {
+      id: 'html-viewer',
+      title: 'HTML Viewer',
+      description: 'Write, load, and preview HTML live with a sandboxed real-time renderer.',
+      icon: <FileCode size={22} className="tool-icon" />,
+      path: '/html-viewer',
+      color: 'orange'
     }
   ];
 

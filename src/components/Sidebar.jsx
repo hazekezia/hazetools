@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, ScanText, TableProperties, FileJson, Key, X, Search, Palette } from 'lucide-react';
+import { Home, ScanText, TableProperties, FileJson, Key, X, Search, Palette, FileCode } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -13,6 +13,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/json-viewer', label: 'JSON Viewer', icon: <FileJson size={20} /> },
     { path: '/ai-key-tester', label: 'AI Key Lab', icon: <Key size={20} /> },
     { path: '/color-toolkit', label: 'Color Toolkit', icon: <Palette size={20} /> },
+    { path: '/html-viewer', label: 'HTML Viewer', icon: <FileCode size={20} /> },
   ];
 
   const filteredItems = navItems.filter((item) =>

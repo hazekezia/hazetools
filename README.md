@@ -11,6 +11,9 @@ No server, no uploads, no data leaves your machine.
 | **Image to Text (OCR)** | Extract text from images using Tesseract.js. Supports drag-and-drop, paste from clipboard, multi-pass OCR with automatic best-result selection, and image preprocessing for improved accuracy. Languages: English + Indonesian. |
 | **CSV Viewer** | Parse and explore `.csv` files instantly. Full-text search across all columns, click-to-sort headers with numeric-aware ordering, and paginated results (50 rows/page). Powered by PapaParse. |
 | **JSON Viewer** | Format, validate, and navigate JSON through an interactive collapsible tree. Includes beautify/minify, key/value search with path highlighting, copy to clipboard, and download as formatted file. |
+| **AI Key Lab** | Test the validity and latency of AI provider API keys directly from the browser. Supports OpenAI, Anthropic, Gemini, Groq, OpenRouter, DeepSeek, MiniMax, Xiaomi MiMo, and custom endpoints. Keys never leave your machine. |
+| **Color Toolkit** | A comprehensive suite of color tools for designers and developers: color picker, image color picker, palette generator, format converter (HEX/RGB/HSL/HSV/CMYK), gradient generator, contrast checker, plus color history. |
+| **HTML Viewer** | Write or load HTML and see it rendered live in a sandboxed iframe. Includes a CodeMirror editor with line numbers and code folding (collapse/expand elements), syntax highlighting, split/preview/code view modes, drag-and-drop or paste input, sample content, advisory tag-balance checks, copy to clipboard, and download as `.html`. |
 
 ## Getting Started
 
@@ -39,6 +42,13 @@ Opens the app at `http://localhost:5173` with hot module replacement.
 ```bash
 npm run build      # outputs to dist/
 npm run preview    # preview the production build locally
+```
+
+### Testing
+
+```bash
+npm test           # run the Vitest unit test suite
+npm run lint       # run ESLint
 ```
 
 ## Author

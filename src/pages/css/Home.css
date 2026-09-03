@@ -79,6 +79,13 @@
   box-shadow: 0 0 15px rgba(236, 72, 153, 0.15);
 }
 
+.tool-card.orange:hover .icon-wrapper {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.3);
+  color: #fb923c;
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.15);
+}
+
 .tool-card .tool-icon {
   color: var(--text-secondary);
   transition: all 0.25s ease;
