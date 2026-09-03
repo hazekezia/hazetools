@@ -1,0 +1,229 @@
+/* ================================================
+   HTML Viewer Component Styles
+   Consistent with hazetools dark theme
+   ================================================ */
+
+/* ---- Layout ---- */
+.html-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* ---- Toolbar ---- */
+.html-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.html-view-toggle {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.2rem;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.view-toggle-btn.active {
+  background: var(--text-primary);
+  color: var(--bg-darker);
+}
+
+.html-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ---- Workspace grid ---- */
+.html-viewer-grid {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
+.html-viewer-grid.split {
+  grid-template-columns: 1fr 1fr;
+}
+
+.html-viewer-grid.preview-only,
+.html-viewer-grid.code-only {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 900px) {
+  .html-viewer-grid.split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Panels ---- */
+.html-editor-panel,
+.html-preview-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 480px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.html-filename {
+  font-size: 0.85rem;
+  color: #c084fc;
+  font-weight: 500;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Panel visibility (view modes) ---- */
+.panel-hidden {
+  display: none !important;
+}
+
+/* ---- Editor (CodeMirror) ----
+   The wrap needs a definite height (not flex:1 inside an auto-height panel,
+   which would let the editor grow to its content and never scroll). */
+.html-editor-wrap {
+  position: relative;
+  height: clamp(420px, calc(100vh - 320px), 700px);
+  overflow: hidden;
+}
+
+.html-cm-host {
+  height: 100%;
+  overflow: hidden;
+}
+
+.html-cm-host .cm-editor {
+  height: 100%;
+  font-size: 0.875rem;
+}
+
+.html-cm-host .cm-scroller {
+  overflow: auto;
+}
+
+/* ---- Preview ---- */
+.html-preview-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 420px;
+  border: none;
+  background: #ffffff;
+}
+
+.html-preview-empty {
+  flex: 1;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.html-preview-empty svg {
+  opacity: 0.5;
+}
+
+.html-preview-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.html-preview-hint {
+  font-size: 0.8rem !important;
+  opacity: 0.7;
+}
+
+/* ---- Status bar ---- */
+.html-status-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 0 0.25rem;
+}
+
+.status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.status-warning {
+  color: #f59e0b;
+}
+
+.status-success {
+  color: #22c55e;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .html-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .html-view-toggle {
+    justify-content: center;
+  }
+
+  .html-toolbar-actions {
+    justify-content: center;
+  }
+}
